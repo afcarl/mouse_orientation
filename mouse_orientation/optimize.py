@@ -44,9 +44,10 @@ def adam(paramvec, loss, batches, rate, epochs=1, b1=0.9, b2=0.999, epsilon=1e-8
     m = np.zeros_like(paramvec)
     v = np.zeros_like(paramvec)
     vals = []
+    i = 0
 
     for epoch in range(epochs):
-        permuted_batches = [batches[i] for i in npr.permutation(len(batches))]
+        permuted_batches = [batches[idx] for idx in npr.permutation(len(batches))]
         for im, angle in permuted_batches:
             val, g = vgrad(loss)(paramvec, im, angle)
             m = (1. - b1)*g    + b1*m
@@ -55,5 +56,6 @@ def adam(paramvec, loss, batches, rate, epochs=1, b1=0.9, b2=0.999, epsilon=1e-8
             vhat = v / (1 - b2**(i+1))
             paramvec -= rate * mhat / (np.sqrt(vhat) + epsilon)
             vals.append(val)
-        if callback: callback(paramvec, vals, permuted_batches)
+            i += 1
+        if callback: callback(epoch, paramvec, vals, permuted_batches)
     return paramvec

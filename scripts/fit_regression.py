@@ -45,8 +45,8 @@ if __name__ == "__main__":
     # make a figure for showing predictions
     prediction_fig = plot_images_and_angles(test_im, predict(test_im, paramvec)[0])
 
-    def callback(paramvec, vals, batches):
-        print prediction_error(paramvec, test_im, test_angle)
+    def callback(epoch, paramvec, vals, batches):
+        print 'epoch {}: {}'.format(epoch, prediction_error(paramvec, test_im, test_angle))
         update_training_progress(fig, ax, line, vals)
         plot_images_and_angles(test_im, predict(test_im, paramvec)[0], prediction_fig)
 
