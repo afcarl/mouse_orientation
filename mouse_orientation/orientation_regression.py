@@ -9,11 +9,14 @@ def gaussian_loglike(x, mu, log_sigmasq):
         -0.5*((np.log(2*np.pi) + log_sigmasq) + (x - mu)**2. / np.exp(log_sigmasq)),
         axis=0))
 
+def predict(im, params):
+    mu, log_sigmasq = map(np.squeeze, gmlp(im, params))
+    return 2*np.pi*sigmoid(mu), 2*np.tanh(log_sigmasq / 2.)
+
 def make_regression(L2_reg, unflatten):
+    _predict = predict
     def predict(im, paramvec):
-        params = unflatten(paramvec)
-        mu, log_sigmasq = map(np.squeeze, gmlp(im, params))
-        return 2*np.pi*sigmoid(mu), 2*np.tanh(log_sigmasq / 2.)
+        return _predict(im, unflatten(paramvec))
 
     def loglike(theta, prediction):
         theta_hat, log_sigmasq_hat = prediction
