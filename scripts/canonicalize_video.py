@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # reorient each video
     print 're-orienting video sequences...'
-    reoriented_datadict = {name: reorient_video(nnet_params, frames[:500])
+    reoriented_datadict = {name: reorient_video(nnet_params, frames)
                            for name, frames in datadict.iteritems()}
     print '...done!'
 
