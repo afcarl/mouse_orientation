@@ -51,9 +51,9 @@ if __name__ == "__main__":
         plot_images_and_angles(test_im, predict(test_im, paramvec)[0], prediction_fig)
 
     # optimize
-    paramvec = adam(paramvec, prediction_error, make_batches(1000, images, angles),
+    paramvec = adam(paramvec, loss, make_batches(1000, images, angles),
                     rate=1e-3, epochs=150, callback=callback)
-    paramvec = adam(paramvec, prediction_error, make_batches(2000, images, angles),
+    paramvec = adam(paramvec, loss, make_batches(2000, images, angles),
                     rate=5e-4, epochs=100, callback=callback)
-    paramvec = adam(paramvec, prediction_error, make_batches(4000, images, angles),
+    paramvec = adam(paramvec, loss, make_batches(4000, images, angles),
                     rate=1e-4, epochs=100, callback=callback)
