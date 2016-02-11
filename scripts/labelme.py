@@ -26,11 +26,12 @@ def press(event):
         for im in unrotated_panel:
             labeled.images.append((im, get_angle(im), key))
         print 'labeled {} images'.format(len(unrotated_panel))
-        if len(labeled.images) % 10 == 0:
+        if npr.rand() < 0.1:
             save()
             print "you've labeled {} images, wow!".format(len(labeled.images))
 
-    next_slide()
+    if key != 'shift':
+        next_slide()
 
 def next_slide():
     global i

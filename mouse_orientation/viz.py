@@ -5,10 +5,16 @@ import matplotlib.pyplot as plt
 from util import rotate
 
 
-def plot_images_and_angles(images, angles, im=None):
-    def plot_angle(ax, center, angle, line=None):
+def plot_images_and_angles(images, prediction, im=None):
+    if isinstance(prediction, tuple):
+        angles, log_sigmasqs = prediction
+    else:
+        angles, log_sigmasqs = prediction, np.zeros_like(prediction)
+
+    def plot_angle(ax, center, angle, sigmasq, line=None):
+        precision = 1./sigmasq
         x0, y0 = center
-        x1, y1 = x0 - 10*np.sin(-angle), y0 - 10*np.cos(-angle)
+        x1, y1 = x0 - precision*np.sin(-angle), y0 - precision*np.cos(-angle)
         if not line:
             ax.plot([x0, x1], [y0, y1], '-', color='cyan', linewidth=2)
         else:
@@ -30,11 +36,11 @@ def plot_images_and_angles(images, angles, im=None):
     centers = zip(xs, ys)
 
     if not ax.lines:
-        for center, angle in zip(centers, angles):
-            plot_angle(ax, center, angle)
+        for center, angle, log_sigmasq in zip(centers, angles, log_sigmasqs):
+            plot_angle(ax, center, angle, np.exp(log_sigmasq))
     else:
-        for center, angle, line in zip(centers, angles, ax.lines):
-            plot_angle(ax, center, angle, line)
+        for center, angle, log_sigmasq, line in zip(centers, angles, log_sigmasqs, ax.lines):
+            plot_angle(ax, center, angle, np.exp(log_sigmasq), line)
 
     plt.draw()
     return im

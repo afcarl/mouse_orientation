@@ -43,12 +43,12 @@ if __name__ == "__main__":
     line, = ax.plot([])
 
     # make a figure for showing predictions
-    prediction_fig = plot_images_and_angles(test_im, predict(test_im, paramvec)[0])
+    prediction_fig = plot_images_and_angles(test_im, predict(test_im, paramvec))
 
     def callback(epoch, paramvec, vals, batches):
         print 'epoch {}: {}'.format(epoch, prediction_error(paramvec, test_im, test_angle))
         update_training_progress(fig, ax, line, vals)
-        plot_images_and_angles(test_im, predict(test_im, paramvec)[0], prediction_fig)
+        plot_images_and_angles(test_im, predict(test_im, paramvec), prediction_fig)
 
     # optimize
     paramvec = adam(paramvec, loss, make_batches(1000, images, angles),
