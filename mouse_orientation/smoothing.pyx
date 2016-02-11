@@ -59,7 +59,7 @@ def kalman_smoother(
         predict_mu = a * filtered_mu[t-1]
         predict_sigmasq = a**2 * filtered_sigmasq[t-1] + sigmasq_states
         G = a * filtered_sigmasq[t-1] / predict_sigmasq
-        filtered_mu[t-1] += filtered_mu[t-1] + G * (filtered_mu[t] - predict_mu)
+        filtered_mu[t-1] += G * (filtered_mu[t] - predict_mu)
         filtered_sigmasq[t-1] += G**2 * (filtered_sigmasq[t] - predict_sigmasq)
 
     return np.asarray(filtered_mu), np.asarray(filtered_sigmasq)
