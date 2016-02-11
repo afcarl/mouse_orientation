@@ -7,7 +7,7 @@ from functools import partial
 from mouse_orientation.load import load_training_data
 from mouse_orientation.nnet import init_gmlp
 from mouse_orientation.orientation_regression import make_regression
-from mouse_orientation.optimize import adadelta, rmsprop, adam, make_batches
+from mouse_orientation.optimize import adadelta, rmsprop, adam
 from mouse_orientation.viz import plot_images_and_angles
 from mouse_orientation.util import flatten
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     images, angles = load_training_data('data/labeled_images.pkl', augmentation=9)
     plot_images_and_angles(images[:20], angles[:20])
 
-    imsize = images.shape[1]
+    N, imsize = images.shape
     hdims = [50, 50]
     L2_reg = 0.
 
@@ -45,15 +45,16 @@ if __name__ == "__main__":
     # make a figure for showing predictions
     prediction_fig = plot_images_and_angles(test_im, predict(test_im, paramvec))
 
-    def callback(epoch, paramvec, vals, batches):
+    def callback(epoch, paramvec, vals):
         print 'epoch {}: {}'.format(epoch, prediction_error(paramvec, test_im, test_angle))
         update_training_progress(fig, ax, line, vals)
         plot_images_and_angles(test_im, predict(test_im, paramvec), prediction_fig)
 
     # optimize
-    paramvec = adam(paramvec, loss, make_batches(2000, images, angles),
-                    rate=1e-3, epochs=50, callback=callback)
-    paramvec = adam(paramvec, loss, make_batches(4000, images, angles),
-                    rate=5e-4, epochs=50, callback=callback)
-    paramvec = adam(paramvec, loss, [(images, angles)],
-                    rate=5e-4, epochs=100, callback=callback)
+    data = (images, angles)
+    paramvec = adam(data, paramvec, loss,
+                    batch_size=1000, rate=5e-4, epochs=100, callback=callback)
+    paramvec = adam(data, paramvec, loss,
+                    batch_size=5000, rate=1e-4, epochs=50, callback=callback)
+    paramvec = adam(data, paramvec, loss,
+                    batch_size=N, rate=1e-4, epochs=50, callback=callback)

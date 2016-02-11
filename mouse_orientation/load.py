@@ -33,5 +33,6 @@ def load_training_data(filename, augmentation=0):
     perm = npr.permutation(images.shape[0])
     images, angles = images[perm], angles[perm]
 
-    print '...done loading {} frames'.format(images.shape[0])
+    print '...done loading {} frames ({} raw, augmented {}x)'.format(
+        images.shape[0], len(train_tuples), 1+augmentation)
     return images.reshape(images.shape[0], -1), angles
