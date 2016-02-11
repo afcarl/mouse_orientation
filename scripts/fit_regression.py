@@ -8,6 +8,7 @@ from mouse_orientation.load import load_training_data
 from mouse_orientation.nnet import init_gmlp
 from mouse_orientation.orientation_regression import make_regression
 from mouse_orientation.optimize import adadelta, rmsprop, adam, make_batches
+from mouse_orientation.viz import plot_images_and_angles
 from mouse_orientation.util import flatten
 
 
@@ -41,11 +42,13 @@ if __name__ == "__main__":
         fig.draw_artist(line)
         plt.pause(0.0001)
 
-    paramvec = adadelta(paramvec, prediction_error, [(images, angles)],
-                        epochs=10, callback=callback)
-    paramvec = adam(paramvec, prediction_error, [(images, angles)],
-                    rate=5e-4, epochs=100, callback=callback)
-    paramvec = adam(paramvec, prediction_error, [(images, angles)],
-                    rate=5e-4, epochs=250, callback=callback)
-    paramvec = adam(paramvec, prediction_error, [(images, angles)],
-                    rate=1e-4, epochs=250, callback=callback)
+    # paramvec = adadelta(paramvec, prediction_error, [(images, angles)],
+    #                     epochs=10, callback=callback)
+    # paramvec = adam(paramvec, prediction_error, [(images, angles)],
+    #                 rate=5e-4, epochs=100, callback=callback)
+    # paramvec = adam(paramvec, prediction_error, [(images, angles)],
+    #                 rate=5e-4, epochs=250, callback=callback)
+    # paramvec = adam(paramvec, prediction_error, [(images, angles)],
+    #                 rate=1e-4, epochs=250, callback=callback)
+
+    plot_images_and_angles(images[:10], angles[:10])

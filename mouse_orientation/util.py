@@ -2,6 +2,7 @@ from __future__ import division
 import autograd.numpy as np
 import autograd.numpy.random as npr
 from autograd.core import getval
+from scipy.ndimage.interpolation import rotate as _rotate
 
 # from mindbike repo, by dougal
 def flatten(value):
@@ -54,3 +55,6 @@ def curry(f, N=None):
             return curry(partial(f, *args), N=num_unbound)
 
     return curried_f
+
+def rotate(im, angle):
+    return _rotate(im, np.rad2deg(angle), reshape=False)
