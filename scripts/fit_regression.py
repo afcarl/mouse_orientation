@@ -15,7 +15,7 @@ from mouse_orientation.util import flatten
 if __name__ == "__main__":
     npr.seed(0)
 
-    images, angles = load_training_data('data/labeled_images.pkl')
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=3)
 
     imsize = images.shape[1]
     hdims = [50, 50]
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     # paramvec = adam(paramvec, prediction_error, [(images, angles)],
     #                 rate=1e-4, epochs=250, callback=callback)
 
-    plot_images_and_angles(images[:10], angles[:10])
+    plot_images_and_angles(images[:20], angles[:20])

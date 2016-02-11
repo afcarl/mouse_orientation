@@ -18,11 +18,11 @@ def load_training_data(filename, augmentation=0):
     if augmentation > 0:
         random_rotations = lambda size: npr.uniform(0, 2*np.pi, size=size)
 
-        def rot(pair, rotation):
-            im, angle = pair
-            return rotate(im), wrap_angle(angle + rotation)
-
         def augment(images, angles):
+            def rot(pair, rotation):
+                im, angle = pair
+                return rotate(im, rotation), wrap_angle(angle - rotation)
+
             return zip(*map(rot, zip(images, angles), random_rotations(len(angles))))
 
         aug_images, aug_angles = zip(*[augment(images, angles) for _ in xrange(augmentation)])
