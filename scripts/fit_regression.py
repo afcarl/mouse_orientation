@@ -54,6 +54,6 @@ if __name__ == "__main__":
     paramvec = adam(paramvec, prediction_error, make_batches(1000, images, angles),
                     rate=1e-3, epochs=150, callback=callback)
     paramvec = adam(paramvec, prediction_error, make_batches(2000, images, angles),
-                    rate=5e-4, epochs=1000, callback=callback)
-    # paramvec = adam(paramvec, prediction_error, [(images, angles)],
-    #                 rate=1e-4, epochs=250, callback=callback)
+                    rate=5e-4, epochs=100, callback=callback)
+    paramvec = adam(paramvec, prediction_error, make_batches(4000, images, angles),
+                    rate=1e-4, epochs=100, callback=callback)
