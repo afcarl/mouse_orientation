@@ -21,7 +21,7 @@ def make_regression(L2_reg, unflatten):
         return gaussian_loglike(effective_thetas, theta_hat, log_sigmasq_hat)
 
     def logprior(paramvec):
-        return -L2_reg * np.dot(paramvec, paramvec)
+        return -1./2 * L2_reg * np.dot(paramvec, paramvec)
 
     def loss(paramvec, im, angle):
         return - logprior(paramvec) - loglike(angle, predict(im, paramvec))

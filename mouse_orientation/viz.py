@@ -9,7 +9,7 @@ def plot_images_and_angles(images, prediction, im=None):
     if isinstance(prediction, tuple):
         angles, log_sigmasqs = prediction
     else:
-        angles, log_sigmasqs = prediction, np.zeros_like(prediction)
+        angles, log_sigmasqs = prediction, np.zeros_like(prediction) - 1.
 
     def plot_angle(ax, center, angle, sigmasq, line=None):
         precision = 1./sigmasq

@@ -24,7 +24,7 @@ if __name__ == "__main__":
     plt.ion()
 
     # load training data and plot some examples
-    images, angles = load_training_data('data/labeled_images.pkl', augmentation=5)
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=9)
     plot_images_and_angles(images[:20], angles[:20])
 
     imsize = images.shape[1]
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     predict, loss, prediction_error = make_regression(L2_reg, unflatten)
 
     # make a subset to show predictions on
-    test_subset = npr.RandomState(0).choice(images.shape[0], size=10, replace=False)
+    test_subset = npr.RandomState(0).choice(images.shape[0], size=20, replace=False)
     test_im, test_angle = images[test_subset], angles[test_subset]
 
     # make a figure for training progress
@@ -52,8 +52,8 @@ if __name__ == "__main__":
 
     # optimize
     paramvec = adam(paramvec, loss, make_batches(1000, images, angles),
-                    rate=1e-3, epochs=150, callback=callback)
+                    rate=1e-3, epochs=100, callback=callback)
     paramvec = adam(paramvec, loss, make_batches(2000, images, angles),
                     rate=5e-4, epochs=100, callback=callback)
-    paramvec = adam(paramvec, loss, make_batches(4000, images, angles),
+    paramvec = adam(paramvec, loss, [(images, angles)],
                     rate=1e-4, epochs=100, callback=callback)
