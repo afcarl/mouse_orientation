@@ -56,4 +56,4 @@ if __name__ == "__main__":
     paramvec = adam(paramvec, loss, make_batches(2000, images, angles),
                     rate=5e-4, epochs=100, callback=callback)
     paramvec = adam(paramvec, loss, [(images, angles)],
-                    rate=1e-4, epochs=100, callback=callback)
+                    rate=1e-4, epochs=250, callback=callback)
