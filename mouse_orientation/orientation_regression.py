@@ -10,7 +10,8 @@ def gaussian_loglike(x, mu, log_sigmasq):
         axis=0))
 
 def make_regression(L2_reg, unflatten):
-    def predict(im, params):
+    def predict(im, paramvec):
+        params = unflatten(paramvec)
         mu, log_sigmasq = map(np.squeeze, gmlp(im, params))
         return 2*np.pi*sigmoid(mu), 2*np.tanh(log_sigmasq / 2.)
 
@@ -23,10 +24,10 @@ def make_regression(L2_reg, unflatten):
         return -L2_reg * np.dot(paramvec, paramvec)
 
     def loss(paramvec, im, angle):
-        return - logprior(paramvec) - loglike(angle, predict(im, unflatten(paramvec)))
+        return - logprior(paramvec) - loglike(angle, predict(im, paramvec))
 
     def prediction_error(paramvec, im, angle):
-        predicted_angle, _ = predict(im, unflatten(paramvec))
+        predicted_angle, _ = predict(im, paramvec)
         return np.sqrt(np.mean((predicted_angle - angle)**2))
 
     return predict, loss, prediction_error
