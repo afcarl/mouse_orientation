@@ -1,5 +1,6 @@
 from __future__ import division
 import autograd.numpy as np
+import autograd.numpy.random as npr
 from autograd.core import getval
 
 # from mindbike repo, by dougal
@@ -53,4 +54,3 @@ def curry(f, N=None):
             return curry(partial(f, *args), N=num_unbound)
 
     return curried_f
-
