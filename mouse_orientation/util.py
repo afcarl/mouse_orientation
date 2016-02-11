@@ -39,3 +39,18 @@ def flatten(value):
 
     else:
         raise Exception("Don't know how to flatten type {}".format(type(value)))
+
+# from mindbike repo, by matt and dougal
+def curry(f, N=None):
+    if N is None:
+        N = len(getargspec(f).args)
+
+    def curried_f(*args):
+        num_unbound = N - len(args)
+        if num_unbound == 0:
+            return f(*args)
+        else:
+            return curry(partial(f, *args), N=num_unbound)
+
+    return curried_f
+
