@@ -2,9 +2,16 @@ from __future__ import division
 import numpy as np
 import numpy.random as npr
 from skimage.measure import label, regionprops
+from scipy.ndimage.morphology import binary_opening, binary_dilation
 from util import rotate
 import cPickle as pickle
 import operator as op
+
+def clean_frames(frames, return_mask=False):
+    mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=2)
+    out = frames.copy()
+    out[~mask] = 0.
+    return out if not return_mask else (out, mask)
 
 def load_training_data(filename, augmentation=0):
     print 'loading training data...'
@@ -12,18 +19,12 @@ def load_training_data(filename, augmentation=0):
     with open(filename, 'r') as infile:
         train_tuples, _ = pickle.load(infile)
 
-    def clean_image(im):
-        props = sorted(regionprops(label(im > 15.)), key=op.attrgetter('area'))[-1]
-        min_row, min_col, max_row, max_col = props.bbox
-        out = np.zeros_like(im)
-        out[min_row:max_row,min_col:max_col] = im[min_row:max_row,min_col:max_col]
-        return out
-
     wrap_angle = lambda angle: angle % (2*np.pi)
     flip = lambda angle, label: angle if label == 'u' else (np.pi + angle)
-    unpack = lambda (im, angle, label): (clean_image(im), flip(angle, label))
 
-    images, angles = map(np.array, zip(*map(unpack, train_tuples)))
+    images, partial_angles, labels = zip(*train_tuples)
+    angles = np.array(map(flip, partial_angles, labels))
+    images = clean_frames(np.array(images))
 
     if augmentation > 0:
         random_rotations = lambda size: npr.uniform(0, 2*np.pi, size=size)
@@ -39,7 +40,6 @@ def load_training_data(filename, augmentation=0):
         images = np.concatenate((images,) + aug_images)
         angles = np.concatenate((angles,) + aug_angles)
 
-    assert np.all(angles >= 0.) and np.all(angles < 2*np.pi)
     perm = npr.permutation(images.shape[0])
     images, angles = images[perm], angles[perm]
 
