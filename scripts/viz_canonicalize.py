@@ -22,7 +22,8 @@ if __name__ == "__main__":
     plt.plot(kalman_smoother(
         0., 100., 1., sigmasq_states, mus, np.exp(log_sigmasqs))[0], 'g-')
 
-    sl = slice(75, 125)
+    sl = slice(100, 115)
+    # sl = slice(None)
     rotated_frames = reorient_video(nnet_params, frames, sigmasq_states)
     plt.matshow(np.vstack((np.hstack(frames[sl]), np.hstack(rotated_frames[sl]))), cmap='plasma')
 

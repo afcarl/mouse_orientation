@@ -1,8 +1,10 @@
 from __future__ import division
 import numpy as np
 import numpy.random as npr
+from skimage.measure import label, regionprops
 from util import rotate
 import cPickle as pickle
+import operator as op
 
 def load_training_data(filename, augmentation=0):
     print 'loading training data...'
@@ -10,9 +12,17 @@ def load_training_data(filename, augmentation=0):
     with open(filename, 'r') as infile:
         train_tuples, _ = pickle.load(infile)
 
+    def clean_image(im):
+        props = sorted(regionprops(label(im > 15.)), key=op.attrgetter('area'))[-1]
+        min_row, min_col, max_row, max_col = props.bbox
+        out = np.zeros_like(im)
+        out[min_row:max_row,min_col:max_col] = im[min_row:max_row,min_col:max_col]
+        return out
+
     wrap_angle = lambda angle: angle % (2*np.pi)
     flip = lambda angle, label: angle if label == 'u' else (np.pi + angle)
-    unpack = lambda (im, angle, label): (im, flip(angle, label))
+    unpack = lambda (im, angle, label): (clean_image(im), flip(angle, label))
+
     images, angles = map(np.array, zip(*map(unpack, train_tuples)))
 
     if augmentation > 0:

@@ -12,12 +12,12 @@ def gaussian_loglike(x, mu, log_sigmasq):
 
 def predict(im, params):
     mu, log_sigmasq = map(np.squeeze, gmlp(im, params))
-    return 2*np.pi*sigmoid(mu), 4.*np.tanh(log_sigmasq / 4.)
+    return 2*np.pi*sigmoid(mu), 2.*np.tanh(log_sigmasq / 2.)
 
 def empirical_l2_reg(images, hdims):
     l2 = init_gmlp(hdims, images.shape[1], 1, scale=0.)
     W_1, b_1 = l2[0]
-    W_1[:] = 1. / (0.01 + np.var(images, axis=0)[:,None])
+    W_1[:] = 1. / (0.001 + np.var(images, axis=0)[:,None])
     return flatten(l2)[0]
 
 def make_regression(L2_reg, unflatten):

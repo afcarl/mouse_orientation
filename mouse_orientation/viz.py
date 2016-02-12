@@ -12,7 +12,7 @@ def plot_images_and_angles(images, prediction, im=None):
         angles, log_sigmasqs = prediction, np.zeros_like(prediction) - 1.
 
     def plot_angle(ax, center, angle, sigmasq, line=None):
-        precision = np.sqrt(1./sigmasq)
+        precision = 1./sigmasq
         x0, y0 = center
         x1, y1 = x0 - precision*np.sin(-angle), y0 - precision*np.cos(-angle)
         if not line:

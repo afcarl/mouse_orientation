@@ -24,11 +24,11 @@ if __name__ == "__main__":
     plt.ion()
 
     # load training data and plot some examples
-    images, angles = load_training_data('data/labeled_images.pkl', augmentation=9)
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=4)
     plot_images_and_angles(images[:20], angles[:20])
 
     N, imsize = images.shape
-    hdims = [50, 50]
+    hdims = [20, 20]
     l2_reg = empirical_l2_reg(images, hdims)
 
     paramvec, unflatten = flatten(init_gmlp(hdims, imsize, 1))
@@ -53,8 +53,8 @@ if __name__ == "__main__":
     # optimize
     data = (images, angles)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=1000, rate=1e-3, epochs=20, callback=callback)
+                    batch_size=100, rate=5e-4, epochs=20, callback=callback)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=5000, rate=1e-4, epochs=50, callback=callback)
+                    batch_size=1000, rate=5e-4, epochs=100, callback=callback)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=N, rate=1e-4, epochs=50, callback=callback)
+                    batch_size=N, rate=1e-4, epochs=500, callback=callback)
