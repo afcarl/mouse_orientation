@@ -6,7 +6,7 @@ from functools import partial
 
 from mouse_orientation.load import load_training_data
 from mouse_orientation.nnet import init_gmlp
-from mouse_orientation.orientation_regression import make_regression
+from mouse_orientation.orientation_regression import make_regression, empirical_l2_reg
 from mouse_orientation.optimize import adadelta, rmsprop, adam
 from mouse_orientation.viz import plot_images_and_angles
 from mouse_orientation.util import flatten
@@ -29,10 +29,10 @@ if __name__ == "__main__":
 
     N, imsize = images.shape
     hdims = [50, 50]
-    L2_reg = 0.
+    l2_reg = empirical_l2_reg(images, hdims)
 
     paramvec, unflatten = flatten(init_gmlp(hdims, imsize, 1))
-    predict, loss, prediction_error = make_regression(L2_reg, unflatten)
+    predict, loss, prediction_error = make_regression(l2_reg, unflatten)
 
     # make a subset to show predictions on
     test_subset = npr.RandomState(0).choice(images.shape[0], size=20, replace=False)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # optimize
     data = (images, angles)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=1000, rate=5e-4, epochs=100, callback=callback)
+                    batch_size=1000, rate=1e-3, epochs=20, callback=callback)
     paramvec = adam(data, paramvec, loss,
                     batch_size=5000, rate=1e-4, epochs=50, callback=callback)
     paramvec = adam(data, paramvec, loss,

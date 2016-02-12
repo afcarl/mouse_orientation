@@ -17,10 +17,10 @@ if __name__ == "__main__":
         datadict = pickle.load(infile)
 
     frames = datadict['test']
-    wrapped_mus, log_sigmasqs = predict(frames.reshape(frames.shape[0], -1), nnet_params)
-    plt.errorbar(np.arange(len(frames)), np.unwrap(wrapped_mus), np.exp(log_sigmasqs / 2.))
+    mus, log_sigmasqs = predict(frames.reshape(frames.shape[0], -1), nnet_params)
+    plt.errorbar(np.arange(len(frames)), mus, np.exp(log_sigmasqs / 2.))
     plt.plot(kalman_smoother(
-        0., 100., 1., sigmasq_states, np.unwrap(wrapped_mus), np.exp(log_sigmasqs))[0], 'g-')
+        0., 100., 1., sigmasq_states, mus, np.exp(log_sigmasqs))[0], 'g-')
 
     sl = slice(75, 125)
     rotated_frames = reorient_video(nnet_params, frames, sigmasq_states)

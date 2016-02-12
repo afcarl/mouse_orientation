@@ -1,8 +1,13 @@
 # distutils: extra_compile_args = -O2 -w
-# cython: boundscheck = False, nonecheck = False, wraparound = False, cdivision = True
+# cython: boundscheck = False, nonecheck = False, wraparound = False
 
 import numpy as np
 cimport numpy as np
+from libc.math cimport round
+from numpy.math cimport PI
+
+cdef inline double round_on_circle(double pt, double val):
+    return val + 2*PI*round((pt - val) / (2*PI))
 
 def kalman_filter(
     double mu_init, double sigmasq_init, double a, double sigmasq_states,
@@ -20,7 +25,8 @@ def kalman_filter(
         # condition
         filtered_sigmasq[t] = 1./(1./predict_sigmasq + 1./node_sigmasq[t])
         filtered_mu[t] = filtered_sigmasq[t] * (
-            predict_mu / predict_sigmasq + node_mu[t] / node_sigmasq[t])
+            predict_mu / predict_sigmasq
+            + round_on_circle(predict_mu, node_mu[t]) / node_sigmasq[t])
 
         # predict
         predict_mu = a * filtered_mu[t]

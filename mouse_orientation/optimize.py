@@ -30,19 +30,18 @@ def adadelta(paramvec, loss, batches, epochs=1, rho=0.95, epsilon=1e-6, callback
         if callback: callback(epoch, paramvec, vals, permuted_batches)
     return paramvec
 
-# TODO update to be like adam
-def rmsprop(paramvec, loss, batches, rate, epochs=1, rho=0.9, epsilon=1e-6, callback=None):
+def rmsprop(data, paramvec, loss, batch_size, rate,
+            epochs=1, rho=0.9, epsilon=1e-6, callback=None):
     sumsq = np.zeros_like(paramvec)
     vals = []
 
     for epoch in range(epochs):
-        permuted_batches = [batches[i] for i in npr.permutation(len(batches))]
-        for im, angle in permuted_batches:
-            val, g = vgrad(loss)(paramvec, im, angle)
+        for minibatch in make_batches(batch_size, data):
+            val, g = vgrad(loss)(paramvec, *minibatch)
             sumsq = rho*sumsq + (1.-rho)*g**2
             paramvec = paramvec - rate * g / np.sqrt(sumsq + epsilon)
             vals.append(val)
-        if callback: callback(epoch, paramvec, vals, permuted_batches)
+        if callback: callback(epoch, paramvec, vals)
     return paramvec
 
 def adam(data, paramvec, loss, batch_size, rate,
