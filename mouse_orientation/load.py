@@ -27,7 +27,7 @@ def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
 
     def flip(angle, label):
         flipme = label == 'd' or (label == 'a' and npr.uniform() < 1./2)
-        return wrap_angle(np.pi + angle) if flipme else anble
+        return wrap_angle(np.pi + angle) if flipme else angle
 
     images, partial_angles, labels = zip(*train_tuples)
     angles = np.array(map(flip, partial_angles, labels))
@@ -49,6 +49,8 @@ def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
 
     perm = npr.permutation(images.shape[0])
     images, angles = images[perm], angles[perm]
+
+    assert np.all(angles >= 0.) and np.all(angles <= 2*np.pi)
 
     print '...done loading {} frames ({} raw, augmented {}x)'.format(
         images.shape[0], len(train_tuples), 1+augmentation)
