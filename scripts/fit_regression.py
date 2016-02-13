@@ -28,10 +28,10 @@ if __name__ == "__main__":
 
     # load training data and plot some examples
     images, angles = load_training_data('data/labeled_images.pkl', augmentation=19)
-    data_fig = plot_images_and_angles(images[:60], angles[:60])
+    data_fig = plot_images_and_angles(images[:80], angles[:80])
     if save_figs: data_fig.figure.savefig('data.png')
 
-    N, imsize = images.shape
+    imsize = images.shape[1]
     hdims = [50, 50]
     # l2_reg = empirical_l2_reg(images, hdims)
     l2_reg = 0.
@@ -40,9 +40,9 @@ if __name__ == "__main__":
     predict, loss, prediction_error = make_regression(l2_reg, unflatten)
 
     # make a subset to show predictions on
-    test_subset = npr.RandomState(0).choice(images.shape[0], size=60, replace=False)
+    test_subset = npr.RandomState(0).choice(images.shape[0], size=80, replace=False)
     test_im, test_angle = images[test_subset], angles[test_subset]
-    images, angles = np.delete(images, test_subset), np.delete(angles, test_subset)
+    images, angles = np.delete(images, test_subset, 0), np.delete(angles, test_subset, 0)
 
     # make a figure for training progress
     fig, ax = plt.subplots()

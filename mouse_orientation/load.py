@@ -52,6 +52,6 @@ def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
 
     assert np.all(angles >= 0.) and np.all(angles <= 2*np.pi)
 
-    print '...done loading {} frames ({} raw, augmented {}x)'.format(
+    print '...done loading {} frames ({} raw, augmented to {}x)'.format(
         images.shape[0], len(train_tuples), 1+augmentation)
     return images.reshape(images.shape[0], -1), angles
