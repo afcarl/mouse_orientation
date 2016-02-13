@@ -7,23 +7,27 @@ from util import rotate
 import cPickle as pickle
 import operator as op
 
+wrap_angle = lambda angle: angle % (2*np.pi)
+
 def clean_frames(frames, return_mask=False):
     mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=1)
     out = frames.copy()
     out[~mask] = 0.
     return out if not return_mask else (out, mask)
 
-def load_training_data(filename, augmentation=0):
+def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
     print 'loading training data...'
 
     with open(filename, 'r') as infile:
         train_tuples, _ = pickle.load(infile)
 
-    wrap_angle = lambda angle: angle % (2*np.pi)
+    if filter_out_ambiguous:
+        not_ambiguous = lambda tup: tup[-1] != 'a'
+        train_tuples = filter(not_ambiguous, train_tuples)
 
     def flip(angle, label):
         flipme = label == 'd' or (label == 'a' and npr.uniform() < 1./2)
-        return (np.pi + angle) if flipme else anble
+        return wrap_angle(np.pi + angle) if flipme else anble
 
     images, partial_angles, labels = zip(*train_tuples)
     angles = np.array(map(flip, partial_angles, labels))
