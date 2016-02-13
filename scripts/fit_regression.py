@@ -27,8 +27,10 @@ if __name__ == "__main__":
     plt.ion()
 
     # load training data and plot some examples
-    images, angles = load_training_data('data/labeled_images.pkl', augmentation=19)
-    plot_images_and_angles(images[:20], angles[:20])
+    # images, angles = load_training_data('data/labeled_images.pkl', augmentation=19)
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=0)
+    data_fig = plot_images_and_angles(images[:60], angles[:60])
+    if save_figs: data_fig.figure.savefig('data.png')
 
     N, imsize = images.shape
     hdims = [50, 50]
@@ -39,7 +41,7 @@ if __name__ == "__main__":
     predict, loss, prediction_error = make_regression(l2_reg, unflatten)
 
     # make a subset to show predictions on
-    test_subset = npr.RandomState(0).choice(images.shape[0], size=20, replace=False)
+    test_subset = npr.RandomState(0).choice(images.shape[0], size=60, replace=False)
     test_im, test_angle = images[test_subset], angles[test_subset]
 
     # make a figure for training progress
@@ -59,8 +61,8 @@ if __name__ == "__main__":
     # optimize
     data = (images, angles)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=100, rate=1e-3, epochs=25, callback=callback)
+                    batch_size=250, rate=1e-3, epochs=25, callback=callback)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=250, rate=1e-3, epochs=50, callback=callback)
+                    batch_size=500, rate=5e-4, epochs=50, callback=callback)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=1000, rate=5e-4, epochs=300, callback=callback)
+                    batch_size=2000, rate=5e-4, epochs=300, callback=callback)

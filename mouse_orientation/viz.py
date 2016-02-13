@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from util import rotate
 
 
-def plot_images_and_angles(images, prediction, im=None):
+def plot_images_and_angles(images, prediction, im=None, perrow=20):
+    N = len(images)
+
     if isinstance(prediction, tuple):
         angles, log_sigmasqs = prediction
     else:
@@ -21,8 +23,15 @@ def plot_images_and_angles(images, prediction, im=None):
             line.set_data([x0, x1], [y0, y1])
 
     make_pair = lambda im, angle: np.vstack((im, rotate(im, angle)))
+    pairs = map(make_pair, images.reshape(-1, 30, 30), angles)
 
-    bigmat = np.hstack(map(make_pair, images.reshape(-1, 30, 30), angles))
+    if N > perrow:
+        nrows = N // perrow
+        pairs= iter(pairs)
+        bigmat = np.vstack([np.hstack([pairs.next() for j in range(perrow)]) for i in range(nrows)])
+    else:
+        bigmat = np.hstack(pairs)
+
     if im is None:
         im = plt.matshow(bigmat, cmap='plasma')
     else:
@@ -31,8 +40,13 @@ def plot_images_and_angles(images, prediction, im=None):
 
     ax.autoscale(False)
     ax.axis('off')
-    xs = -0.5 + 15 + 30*np.arange(images.shape[0])
-    ys = np.repeat(15, images.shape[0])
+
+    if N > perrow:
+        xs = np.tile(-0.5 + 15 + 30*np.arange(N // nrows), nrows)
+        ys = np.repeat(-0.5 + 15 + 60*np.arange(nrows), N // nrows)
+    else:
+        xs = -0.5 + 15 + 30*np.arange(N)
+        ys = np.repeat(15, N)
     centers = zip(xs, ys)
 
     if not ax.lines:
