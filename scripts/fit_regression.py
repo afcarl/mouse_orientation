@@ -6,7 +6,7 @@ from functools import partial
 
 from mouse_orientation.load import load_training_data
 from mouse_orientation.nnet import init_gmlp
-from mouse_orientation.orientation_regression import make_regression, empirical_l2_reg
+from mouse_orientation.regression import make_regression, empirical_l2_reg
 from mouse_orientation.optimize import adadelta, rmsprop, adam
 from mouse_orientation.viz import plot_images_and_angles
 from mouse_orientation.util import flatten

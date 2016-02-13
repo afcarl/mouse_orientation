@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 
 from load import clean_frames
-from orientation_regression import predict
+from regression import predict
 from kalman import kalman_smoother
 from util import rotate
 
