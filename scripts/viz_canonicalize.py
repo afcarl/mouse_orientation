@@ -26,9 +26,11 @@ if __name__ == "__main__":
         0., 100., 1., sigmasq_states, mus, np.exp(log_sigmasqs))[0], 'g-')
 
     ### a look at results
-    sl = slice(90, 110)
+    sl = slice(270, 290)
     # sl = slice(None)
     rotated_frames = reorient_video(nnet_params, frames, sigmasq_states)
-    plt.matshow(np.vstack((np.hstack(frames[sl]), np.hstack(rotated_frames[sl]))), cmap='plasma')
+    plt.matshow(np.vstack((np.hstack(frames), np.hstack(rotated_frames))), cmap='plasma')
+    plt.xlim(sl.start*30, sl.stop*30)
 
+    plt.show()
     plt.show()

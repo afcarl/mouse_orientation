@@ -8,7 +8,7 @@ import cPickle as pickle
 import operator as op
 
 def clean_frames(frames, return_mask=False):
-    mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=2)
+    mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=0)
     out = frames.copy()
     out[~mask] = 0.
     return out if not return_mask else (out, mask)
@@ -22,10 +22,8 @@ def load_training_data(filename, augmentation=0):
     wrap_angle = lambda angle: angle % (2*np.pi)
 
     def flip(angle, label):
-        if angle in ('u', 'd'):
-            return angle if label == 'u' else (np.pi + angle)
-        else:
-            return npr.uniform(0, 2*np.pi)  # ambiguous orientation
+        flipme = label == 'd' or (label == 'a' and npr.uniform() < 1./2)
+        return (np.pi + angle) if flipme else anble
 
     images, partial_angles, labels = zip(*train_tuples)
     angles = np.array(map(flip, partial_angles, labels))

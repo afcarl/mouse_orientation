@@ -24,11 +24,11 @@ if __name__ == "__main__":
     plt.ion()
 
     # load training data and plot some examples
-    images, angles = load_training_data('data/labeled_images.pkl', augmentation=4)
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=0)
     plot_images_and_angles(images[:20], angles[:20])
 
     N, imsize = images.shape
-    hdims = [20, 20]
+    hdims = [50, 50]
     # l2_reg = empirical_l2_reg(images, hdims)
     l2_reg = 0.
 
@@ -58,4 +58,4 @@ if __name__ == "__main__":
     paramvec = adam(data, paramvec, loss,
                     batch_size=1000, rate=1e-4, epochs=100, callback=callback)
     paramvec = adam(data, paramvec, loss,
-                    batch_size=2500, rate=5e-4, epochs=500, callback=callback)
+                    batch_size=N, rate=5e-4, epochs=500, callback=callback)
