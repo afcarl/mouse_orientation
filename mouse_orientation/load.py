@@ -8,7 +8,7 @@ import cPickle as pickle
 import operator as op
 
 def clean_frames(frames, return_mask=False):
-    mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=0)
+    mask = binary_dilation(binary_opening(frames > 15., iterations=2), iterations=1)
     out = frames.copy()
     out[~mask] = 0.
     return out if not return_mask else (out, mask)
