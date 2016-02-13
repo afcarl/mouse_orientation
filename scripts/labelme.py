@@ -16,13 +16,14 @@ labeled = lambda: None
 def press(event):
     key = event.key
     idx = perm[i]
-    if key in ('U', 'D'):
+
+    if key in ('U', 'D', 'A'):
         unrotated_panel = [data[idx]]
         key = key.lower()
     else:
         unrotated_panel = data[idx-each_side:idx+each_side+1]
 
-    if key in ('u', 'd'):
+    if key in ('u', 'd', 'a'):
         for im in unrotated_panel:
             labeled.images.append((im, get_angle(im), key))
         print 'labeled {} images'.format(len(unrotated_panel))

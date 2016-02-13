@@ -20,7 +20,12 @@ def load_training_data(filename, augmentation=0):
         train_tuples, _ = pickle.load(infile)
 
     wrap_angle = lambda angle: angle % (2*np.pi)
-    flip = lambda angle, label: angle if label == 'u' else (np.pi + angle)
+
+    def flip(angle, label):
+        if angle in ('u', 'd'):
+            return angle if label == 'u' else (np.pi + angle)
+        else:
+            return npr.uniform(0, 2*np.pi)  # ambiguous orientation
 
     images, partial_angles, labels = zip(*train_tuples)
     angles = np.array(map(flip, partial_angles, labels))

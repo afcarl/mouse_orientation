@@ -54,7 +54,8 @@ def kalman_smoother(
         # condition
         filtered_sigmasq[t] = 1./(1./predict_sigmasq + 1./node_sigmasq[t])
         filtered_mu[t] = filtered_sigmasq[t] * (
-            predict_mu / predict_sigmasq + node_mu[t] / node_sigmasq[t])
+            predict_mu / predict_sigmasq
+            + round_on_circle(predict_mu, node_mu[t]) / node_sigmasq[t])
 
         # predict
         predict_mu = a * filtered_mu[t]
