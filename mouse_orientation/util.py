@@ -58,3 +58,20 @@ def curry(f, N=None):
 
 def rotate(im, angle):
     return _rotate(im, np.rad2deg(angle), reshape=False)
+
+# based on syllables utility function
+def colorize(frames, cmap):
+    import matplotlib.pyplot as plt
+    cmap = plt.get_cmap(cmap) if isinstance(cmap, str) else cmap
+    frames = frames.copy()
+    frames -= np.nanmin(frames)
+    frames /= np.nanmax(frames)
+    return np.clip(cmap(frames)[...,:3]*255, 0, 255)
+
+# based on syllables utility function
+def make_movie(frames, outfile, fps=30, cmap='cubehelix'):
+    import moviepy.editor as mp
+    frames = colorize(frames, cmap)
+    duration = (frames.shape[0] - 1) / fps
+    ani = mp.VideoClip(make_frame=lambda t: frames[int(t*fps)], duration=duration)
+    ani.write_videofile(outfile, fps=fps)
