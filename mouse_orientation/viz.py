@@ -5,13 +5,18 @@ import matplotlib.pyplot as plt
 from util import rotate
 
 
-def plot_images_and_angles(images, prediction, im=None, perrow=20):
+def plot_images_and_angles(images, prediction, im=None, perrow=20, sort_by_confidence=True):
     N = len(images)
 
     if isinstance(prediction, tuple):
         angles, log_sigmasqs = prediction
     else:
         angles, log_sigmasqs = prediction, np.zeros_like(prediction) - 1.
+
+    if sort_by_confidence:
+        precisions = 1./np.exp(log_sigmasqs)
+        perm = np.argsort(precisions)[::-1]
+        images, angles, log_sigmasqs = images[perm], angles[perm], log_sigmasqs[perm]
 
     def plot_angle(ax, center, angle, sigmasq, line=None):
         precision = 1./sigmasq

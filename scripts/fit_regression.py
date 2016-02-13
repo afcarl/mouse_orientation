@@ -27,8 +27,7 @@ if __name__ == "__main__":
     plt.ion()
 
     # load training data and plot some examples
-    # images, angles = load_training_data('data/labeled_images.pkl', augmentation=19)
-    images, angles = load_training_data('data/labeled_images.pkl', augmentation=0)
+    images, angles = load_training_data('data/labeled_images.pkl', augmentation=19)
     data_fig = plot_images_and_angles(images[:60], angles[:60])
     if save_figs: data_fig.figure.savefig('data.png')
 
@@ -43,6 +42,7 @@ if __name__ == "__main__":
     # make a subset to show predictions on
     test_subset = npr.RandomState(0).choice(images.shape[0], size=60, replace=False)
     test_im, test_angle = images[test_subset], angles[test_subset]
+    images, angles = np.delete(images, test_subset), np.delete(angles, test_subset)
 
     # make a figure for training progress
     fig, ax = plt.subplots()
@@ -66,3 +66,5 @@ if __name__ == "__main__":
                     batch_size=500, rate=5e-4, epochs=50, callback=callback)
     paramvec = adam(data, paramvec, loss,
                     batch_size=2000, rate=5e-4, epochs=300, callback=callback)
+    paramvec = adam(data, paramvec, loss,
+                    batch_size=4000, rate=1e-4, epochs=300, callback=callback)
