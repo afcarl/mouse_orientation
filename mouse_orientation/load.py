@@ -15,7 +15,10 @@ def clean_frames(frames, return_mask=False):
     out[~mask] = 0.
     return out if not return_mask else (out, mask)
 
-def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
+def partial_flatten(x):
+    return x.reshape(x.shape[0], -1)
+
+def load_training_data(filename, augmentation=0, hold_out=0, filter_out_ambiguous=True):
     print 'loading training data...'
 
     with open(filename, 'r') as infile:
@@ -32,6 +35,11 @@ def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
     images, partial_angles, labels = zip(*train_tuples)
     angles = np.array(map(flip, partial_angles, labels))
     images = clean_frames(np.array(images))
+
+    if hold_out > 0:
+        test_subset = npr.RandomState(0).choice(images.shape[0], size=hold_out, replace=False)
+        test_images, test_angles = images[test_subset], angles[test_subset]
+        images, angles = np.delete(images, test_subset, 0), np.delete(angles, test_subset, 0)
 
     if augmentation > 0:
         random_rotations = lambda size: npr.uniform(0, 2*np.pi, size=size)
@@ -54,4 +62,7 @@ def load_training_data(filename, augmentation=0, filter_out_ambiguous=True):
 
     print '...done loading {} frames ({} raw, augmented to {}x)'.format(
         images.shape[0], len(train_tuples), 1+augmentation)
-    return images.reshape(images.shape[0], -1), angles
+
+    if hold_out > 0:
+        return (partial_flatten(images), angles), (partial_flatten(test_images), test_angles)
+    return partial_flatten(images), angles
