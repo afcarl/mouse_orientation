@@ -60,8 +60,8 @@ def load_training_data(filename, augmentation=0, hold_out=0, filter_out_ambiguou
 
     assert np.all(angles >= 0.) and np.all(angles <= 2*np.pi)
 
-    print '...done loading {} frames ({} raw, augmented to {}x)'.format(
-        images.shape[0], len(train_tuples), 1+augmentation)
+    print '...done loading {} frames ({} raw, augmented to {}x, {} held out)'.format(
+        images.shape[0], len(train_tuples) - hold_out, 1+augmentation, hold_out)
 
     if hold_out > 0:
         return (partial_flatten(images), angles), (partial_flatten(test_images), test_angles)
