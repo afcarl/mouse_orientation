@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 import numpy.random as npr
 import matplotlib.pyplot as plt
-from functools import partial
+import cPickle as pickle
 
 from mouse_orientation.load import load_training_data
 from mouse_orientation.nnet import init_gmlp
@@ -64,5 +64,9 @@ if __name__ == "__main__":
                     batch_size=2000, rate=5e-4, epochs=500, callback=callback)
     paramvec = adam(data, paramvec, loss,
                     batch_size=4000, rate=1e-4, epochs=1000, callback=callback)
-    paramvec = adam(data, paramvec, loss,
-                    batch_size=4000, rate=5e-5, epochs=1000, callback=callback)
+    # paramvec = adam(data, paramvec, loss,
+    #                 batch_size=4000, rate=5e-5, epochs=1000, callback=callback)
+
+    # save parameters
+    with open('data/nnet_params.pkl', 'w') as outfile:
+        pickle.dump(unflatten(paramvec), outfile, protocol=-1)
