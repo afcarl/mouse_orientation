@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # reorient each video
     print 're-orienting video sequences...'
     reoriented_datadict = \
-        {name: reorient_video(nnet_params, frames, sigmasq_states, inflate_vars=2.)
+        {name: reorient_video(nnet_params, frames, sigmasq_states, inflate_vars=1.)
          for name, frames in iteritems(datadict)}
     print '...done!'
 

@@ -18,7 +18,7 @@ def clean_frames(frames, return_mask=False):
 def partial_flatten(x):
     return x.reshape(x.shape[0], -1)
 
-def load_training_data(filename, augmentation=0, hold_out=0, filter_out_ambiguous=True):
+def load_training_data(filename, augmentation=0, hold_out=0, filter_out_ambiguous=False):
     print 'loading training data...'
 
     with open(filename, 'r') as infile:
